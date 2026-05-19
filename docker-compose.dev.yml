@@ -1,11 +1,11 @@
 services:
-  3lakustinizer-backend:
+  radrennbahn-backend:
     build: .
     env_file:
       - .env
     ports:
       - "5000:5000"
-    container_name: 3lakustinizer-backend   
+    container_name: radrennbahn-backend   
     volumes:
       - .:/app
       - /app/node_modules
@@ -28,7 +28,7 @@ services:
   db:
     image: mysql:8.0
     restart: always
-    container_name: 3lakustinizer-mysql-db
+    container_name: radrennbahn-mysql-db
     env_file:
       - .env
     environment:
@@ -47,7 +47,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
-    container_name: 3lakustinizer-phpmyadmin
+    container_name: radrennbahn-phpmyadmin
     env_file:
       - .env    
     ports:
