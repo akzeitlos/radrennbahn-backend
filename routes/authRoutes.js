@@ -50,7 +50,7 @@ router.get("/me", authMiddleware, me);
 router.post(
   "/register",
   authMiddleware,         // JWT-Authentifizierung prüfen
-  requireRole(["Backoffice"]), // Zugriff nur für bestimmte Rollen
+  requireRole(["admin"]), // Zugriff nur für bestimmte Rollen
   validateRegister,
   register
 );
