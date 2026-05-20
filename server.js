@@ -61,6 +61,8 @@ async function bootstrap() {
       adminUser = await user.create({
         email: "kontakt@creative-codes.de",
         username: "akzeitlos",
+        firstname: "Andreas",
+        lastname: "Krüger",
         passwordHash,
       });
 

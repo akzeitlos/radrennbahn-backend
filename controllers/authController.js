@@ -106,8 +106,6 @@ export const register = async (req, res) => {
     email,
     username,
     password,
-    salutation,
-    title,
     firstname,
     lastname,
     roles = [],
@@ -130,8 +128,6 @@ export const register = async (req, res) => {
       email,
       username,
       passwordHash,
-      salutation,
-      title,
       firstname,
       lastname,
     });

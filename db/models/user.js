@@ -16,14 +16,6 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      salutation: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      title: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       firstname: {
         type: DataTypes.STRING,
         allowNull: true,

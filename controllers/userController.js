@@ -40,8 +40,6 @@ async function createUser(req, res) {
       email,
       username,
       password,
-      salutation,
-      title,
       firstname,
       lastname,
     } = req.body;
@@ -52,8 +50,6 @@ async function createUser(req, res) {
       email,
       username,
       passwordHash,
-      salutation,
-      title,
       firstname,
       lastname,
     });
@@ -80,16 +76,12 @@ async function updateUser(req, res) {
       email,
       username,
       password,
-      salutation,
-      title,
       firstname,
       lastname,
     } = req.body;
 
     if (email !== undefined) foundUser.email = email;
     if (username !== undefined) foundUser.username = username;
-    if (salutation !== undefined) foundUser.salutation = salutation;
-    if (title !== undefined) foundUser.title = title;
     if (firstname !== undefined) foundUser.firstname = firstname;
     if (lastname !== undefined) foundUser.lastname = lastname;
 
