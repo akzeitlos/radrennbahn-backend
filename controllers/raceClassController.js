@@ -4,14 +4,8 @@ const { raceClass, athlete } = db;
 async function getAllRaceClasses(req, res) {
   try {
     const classes = await raceClass.findAll({
-      include: [
-        {
-          model: athlete,
-          as: "athletes",
-        },
-      ],
+      include: [{ model: athlete, as: "athletes" }],
     });
-
     res.json(classes);
   } catch (err) {
     console.error(err);
@@ -22,18 +16,11 @@ async function getAllRaceClasses(req, res) {
 async function getRaceClassById(req, res) {
   try {
     const found = await raceClass.findByPk(req.params.id, {
-      include: [
-        {
-          model: athlete,
-          as: "athletes",
-        },
-      ],
+      include: [{ model: athlete, as: "athletes" }],
     });
-
     if (!found) {
       return res.status(404).json({ error: "Rennklasse nicht gefunden." });
     }
-
     res.json(found);
   } catch (err) {
     console.error(err);
@@ -43,13 +30,8 @@ async function getRaceClassById(req, res) {
 
 async function createRaceClass(req, res) {
   try {
-    const { name, description } = req.body;
-
-    const newClass = await raceClass.create({
-      name,
-      description,
-    });
-
+    const { name, slug, description } = req.body;
+    const newClass = await raceClass.create({ name, slug, description });
     res.status(201).json(newClass);
   } catch (err) {
     console.error(err);
@@ -60,18 +42,16 @@ async function createRaceClass(req, res) {
 async function updateRaceClass(req, res) {
   try {
     const found = await raceClass.findByPk(req.params.id);
-
     if (!found) {
       return res.status(404).json({ error: "Rennklasse nicht gefunden." });
     }
 
-    const { name, description } = req.body;
-
+    const { name, slug, description } = req.body;
     if (name !== undefined) found.name = name;
+    if (slug !== undefined) found.slug = slug;
     if (description !== undefined) found.description = description;
 
     await found.save();
-
     res.json(found);
   } catch (err) {
     console.error(err);
@@ -82,13 +62,10 @@ async function updateRaceClass(req, res) {
 async function deleteRaceClass(req, res) {
   try {
     const found = await raceClass.findByPk(req.params.id);
-
     if (!found) {
       return res.status(404).json({ error: "Rennklasse nicht gefunden." });
     }
-
     await found.destroy();
-
     res.status(204).send();
   } catch (err) {
     console.error(err);

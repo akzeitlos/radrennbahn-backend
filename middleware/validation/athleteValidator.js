@@ -1,6 +1,5 @@
 import { body, validationResult } from "express-validator";
 import db from "../../db/index.js";
-
 const { athlete, club, raceClass } = db;
 
 export const validateCreateAthlete = [
@@ -23,10 +22,9 @@ export const validateCreateAthlete = [
     .withMessage("Geschlecht ist ungültig."),
 
   body("clubId")
-    .notEmpty()
-    .withMessage("Club ist erforderlich.")
-    .bail()
+    .optional({ nullable: true })
     .custom(async (clubId) => {
+      if (!clubId) return true;
       const existingClub = await club.findByPk(clubId);
       if (!existingClub) {
         return Promise.reject("Club existiert nicht.");
@@ -40,11 +38,7 @@ export const validateCreateAthlete = [
     .bail()
     .custom(async (ids) => {
       if (!ids || ids.length === 0) return true;
-
-      const count = await raceClass.count({
-        where: { id: ids },
-      });
-
+      const count = await raceClass.count({ where: { id: ids } });
       if (count !== ids.length) {
         return Promise.reject("Eine oder mehrere Rennklassen existieren nicht.");
       }
@@ -72,8 +66,9 @@ export const validateUpdateAthlete = [
     .isString(),
 
   body("clubId")
-    .optional()
+    .optional({ nullable: true })
     .custom(async (clubId) => {
+      if (!clubId) return true;
       const existingClub = await club.findByPk(clubId);
       if (!existingClub) {
         return Promise.reject("Club existiert nicht.");
@@ -87,11 +82,7 @@ export const validateUpdateAthlete = [
     .bail()
     .custom(async (ids) => {
       if (!ids) return true;
-
-      const count = await raceClass.count({
-        where: { id: ids },
-      });
-
+      const count = await raceClass.count({ where: { id: ids } });
       if (count !== ids.length) {
         return Promise.reject("Eine oder mehrere Rennklassen existieren nicht.");
       }

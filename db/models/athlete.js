@@ -25,7 +25,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
-    }
+    },
   );
 
   athlete.associate = (models) => {
@@ -43,6 +43,14 @@ export default (sequelize, DataTypes) => {
     athlete.belongsToMany(models.raceClass, {
       through: models.athleteRaceClass,
       as: "raceClasses",
+    });
+
+    // ==============================
+    // Rennen
+    // ==============================
+    athlete.belongsToMany(models.race, {
+      through: models.raceAthlete,
+      as: "races",
     });
   };
 

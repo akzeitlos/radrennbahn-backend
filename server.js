@@ -2,15 +2,15 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
-
 import db from "./db/index.js";
-
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import athleteRoutes from "./routes/athleteRoutes.js";
 import clubRoutes from "./routes/clubRoutes.js";
 import raceClassRoutes from "./routes/raceClassRoutes.js";
+import raceRoutes from "./routes/raceRoutes.js";
+import raceModeRoutes from "./routes/raceModeRoutes.js";
 
 dotenv.config();
 
@@ -27,11 +27,12 @@ app.use("/api/roles", roleRoutes);
 app.use("/api/athletes", athleteRoutes);
 app.use("/api/clubs", clubRoutes);
 app.use("/api/race-classes", raceClassRoutes);
+app.use("/api/races", raceRoutes);
+app.use("/api/race-modes", raceModeRoutes);
 
 async function bootstrap() {
   try {
     await db.sequelize.sync();
-
     console.log("Database synced");
 
     const { user, role } = db;
@@ -57,7 +58,6 @@ async function bootstrap() {
 
     if (!adminUser) {
       const passwordHash = await bcrypt.hash("12341234", 10);
-
       adminUser = await user.create({
         email: "kontakt@creative-codes.de",
         username: "akzeitlos",
@@ -65,7 +65,6 @@ async function bootstrap() {
         lastname: "Krüger",
         passwordHash,
       });
-
       console.log("Admin user created");
     }
 
@@ -73,7 +72,6 @@ async function bootstrap() {
     // 🔹 ROLE ZUWEISUNG
     // =========================
     const roles = await adminUser.getRoles();
-
     const hasAdminRole = roles.some((r) => r.name === "admin");
 
     if (!hasAdminRole) {

@@ -22,7 +22,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      
+
   db_radrennbahn:
     image: mysql:8.0
     restart: always
@@ -35,14 +35,14 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - db_data:/var/lib/mysql
+      - ./data_db:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
     container_name: radrennbahn-phpmyadmin
     env_file:
-      - .env    
+      - .env
     ports:
       - "8080:80"
     environment:
@@ -51,6 +51,3 @@ services:
       - PMA_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db_radrennbahn
-      
-volumes:
-  db_data:

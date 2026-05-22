@@ -8,21 +8,17 @@ import {
   deleteAthlete,
 } from "../controllers/athleteController.js";
 
+import {
+  validateCreateAthlete,
+  validateUpdateAthlete,
+} from "../middleware/validation/athleteValidator.js";
+
 const router = express.Router();
 
-// Alle Athleten
 router.get("/", getAllAthletes);
-
-// Einzelner Athlet
 router.get("/:id", getAthleteById);
-
-// Athlet erstellen
-router.post("/", createAthlete);
-
-// Athlet bearbeiten
-router.put("/:id", updateAthlete);
-
-// Athlet löschen
+router.post("/", validateCreateAthlete, createAthlete);
+router.put("/:id", validateUpdateAthlete, updateAthlete);
 router.delete("/:id", deleteAthlete);
 
 export default router;

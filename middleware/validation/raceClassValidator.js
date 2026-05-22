@@ -1,6 +1,5 @@
 import { body, validationResult } from "express-validator";
 import db from "../../db/index.js";
-
 const { raceClass } = db;
 
 export const validateCreateRaceClass = [
@@ -10,9 +9,19 @@ export const validateCreateRaceClass = [
     .bail()
     .custom(async (name) => {
       const existing = await raceClass.findOne({ where: { name } });
-      if (existing) {
-        return Promise.reject("Rennklasse existiert bereits.");
-      }
+      if (existing) return Promise.reject("Rennklasse existiert bereits.");
+    }),
+
+  body("slug")
+    .notEmpty()
+    .withMessage("Slug ist erforderlich.")
+    .bail()
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("Slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten.")
+    .bail()
+    .custom(async (slug) => {
+      const existing = await raceClass.findOne({ where: { slug } });
+      if (existing) return Promise.reject("Slug existiert bereits.");
     }),
 
   (req, res, next) => {
@@ -32,15 +41,21 @@ export const validateUpdateRaceClass = [
     .bail()
     .custom(async (name, { req }) => {
       const existing = await raceClass.findOne({
-        where: {
-          name,
-          id: { [db.Sequelize.Op.ne]: req.params.id },
-        },
+        where: { name, id: { [db.Sequelize.Op.ne]: req.params.id } },
       });
+      if (existing) return Promise.reject("Rennklasse existiert bereits.");
+    }),
 
-      if (existing) {
-        return Promise.reject("Rennklasse existiert bereits.");
-      }
+  body("slug")
+    .optional()
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("Slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten.")
+    .bail()
+    .custom(async (slug, { req }) => {
+      const existing = await raceClass.findOne({
+        where: { slug, id: { [db.Sequelize.Op.ne]: req.params.id } },
+      });
+      if (existing) return Promise.reject("Slug existiert bereits.");
     }),
 
   (req, res, next) => {

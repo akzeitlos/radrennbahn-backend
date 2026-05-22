@@ -8,6 +8,12 @@ export default (sequelize, DataTypes) => {
         unique: true,
       },
 
+      slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+
       description: {
         type: DataTypes.TEXT,
         allowNull: true,
@@ -19,9 +25,6 @@ export default (sequelize, DataTypes) => {
   );
 
   raceClass.associate = (models) => {
-    // ==============================
-    // Rennklasse ↔ Athleten
-    // ==============================
     raceClass.belongsToMany(models.athlete, {
       through: models.athleteRaceClass,
       as: "athletes",

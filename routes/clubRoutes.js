@@ -8,21 +8,17 @@ import {
   deleteClub,
 } from "../controllers/clubController.js";
 
+import {
+  validateCreateClub,
+  validateUpdateClub,
+} from "../middleware/validation/clubValidator.js";
+
 const router = express.Router();
 
-// Alle Vereine
 router.get("/", getAllClubs);
-
-// Einzelner Verein
 router.get("/:id", getClubById);
-
-// Verein erstellen
-router.post("/", createClub);
-
-// Verein bearbeiten
-router.put("/:id", updateClub);
-
-// Verein löschen
+router.post("/", validateCreateClub, createClub);
+router.put("/:id", validateUpdateClub, updateClub);
 router.delete("/:id", deleteClub);
 
 export default router;

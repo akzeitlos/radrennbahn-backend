@@ -5,7 +5,7 @@ services:
       - .env
     ports:
       - "5000:5000"
-    container_name: radrennbahn-backend   
+    container_name: radrennbahn-backend
     volumes:
       - .:/app
       - /app/node_modules
@@ -37,7 +37,7 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - db_data:/var/lib/mysql
+      - ./data_db:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
@@ -49,7 +49,7 @@ services:
     restart: always
     container_name: radrennbahn-phpmyadmin
     env_file:
-      - .env    
+      - .env
     ports:
       - "8080:80"
     environment:
@@ -58,6 +58,3 @@ services:
       - PMA_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db_radrennbahn
-
-volumes:
-  db_data:
