@@ -63,10 +63,15 @@ export default (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: null,
       },
+      isCompleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       timestamps: true,
-    }
+    },
   );
 
   race.associate = (models) => {
@@ -92,6 +97,12 @@ export default (sequelize, DataTypes) => {
     race.hasMany(models.danishScoringRound, {
       foreignKey: "raceId",
       as: "danishScoringRounds",
+    });
+
+    // Rohe Rennsession-Einträge
+    race.hasMany(models.raceEntry, {
+      foreignKey: "raceId",
+      as: "raceEntries",
     });
   };
 

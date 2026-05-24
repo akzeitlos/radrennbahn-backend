@@ -11,6 +11,7 @@ import raceModeModel from "./models/raceMode.js";
 import raceModel from "./models/race.js";
 import raceAthleteModel from "./models/raceAthlete.js";
 import danishScoringRoundModel from "./models/danishScoringRound.js";
+import raceEntryModel from "./models/raceEntry.js";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ const raceMode = raceModeModel(sequelize, DataTypes);
 const race = raceModel(sequelize, DataTypes);
 const raceAthlete = raceAthleteModel(sequelize, DataTypes);
 const danishScoringRound = danishScoringRoundModel(sequelize, DataTypes);
+const raceEntry = raceEntryModel(sequelize, DataTypes);
 
 // ==============================
 // DB Objekt
@@ -60,6 +62,7 @@ const db = {
   race,
   raceAthlete,
   danishScoringRound,
+  raceEntry,
 };
 
 // ==============================
