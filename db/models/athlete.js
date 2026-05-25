@@ -15,7 +15,6 @@ export default (sequelize, DataTypes) => {
       raceNumber: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
       },
 
       gender: {
