@@ -1,10 +1,36 @@
 services:
+
+  # ── Traefik Reverse Proxy + SSL ───────────────────────────
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=radrennbahn_web"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - web
+
+  # ── Backend ───────────────────────────────────────────────
   radrennbahn-backend:
     build: .
     env_file:
       - .env
-    ports:
-      - "5000:5000"
     container_name: radrennbahn-backend
     restart: unless-stopped
     command: node server.js
@@ -22,7 +48,19 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+      - FRONTEND_URL=https://radrennbahn.pushandpull.de
+    networks:
+      - web
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`radrennbahn-backend.pushandpull.de`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=5000"
+      - "traefik.docker.network=radrennbahn_web"
 
+  # ── MySQL Datenbank ───────────────────────────────────────
   db_radrennbahn:
     image: mysql:8.0
     restart: always
@@ -36,7 +74,10 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./data_db:/var/lib/mysql
+    networks:
+      - internal
 
+  # ── phpMyAdmin (nur lokal, nicht öffentlich) ──────────────
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
@@ -44,10 +85,18 @@ services:
     env_file:
       - .env
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     environment:
       - PMA_HOST=${DB_HOST}
       - PMA_USER=${DB_USER}
       - PMA_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db_radrennbahn
+    networks:
+      - internal
+
+networks:
+  web:
+    name: radrennbahn_web
+  internal:
+    internal: true
