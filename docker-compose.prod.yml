@@ -48,13 +48,13 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - FRONTEND_URL=https://radrennbahn.pushandpull.de
+      - FRONTEND_URL=https://radrennbahn.pushandpull.app
     networks:
       - web
       - internal
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`radrennbahn-backend.pushandpull.de`)"
+      - "traefik.http.routers.backend.rule=Host(`radrennbahn-backend.pushandpull.app`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=5000"
