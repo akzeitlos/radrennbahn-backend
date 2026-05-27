@@ -32,7 +32,7 @@ app.use("/api/race-modes", raceModeRoutes);
 
 async function bootstrap() {
   try {
-    await db.sequelize.sync({ alter: true }); // <- hier
+    await db.sequelize.sync({ alter: process.env.NODE_ENV === "development" });
     console.log("Database synced");
     const { user, role } = db;
 
