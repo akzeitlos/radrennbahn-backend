@@ -88,7 +88,7 @@ services:
     env_file:
       - .env
     ports:
-      - "127.0.0.1:8080:80"
+      - "8080:80"
     environment:
       - PMA_HOST=${DB_HOST}
       - PMA_USER=${DB_USER}
