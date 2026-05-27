@@ -97,6 +97,7 @@ services:
       - db_radrennbahn
     networks:
       - internal
+      - web
 
 networks:
   web:
