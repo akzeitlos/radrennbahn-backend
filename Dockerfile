@@ -7,8 +7,8 @@ WORKDIR /app
 # Kopiere package.json und package-lock.json (wenn vorhanden)
 COPY package*.json ./
 
-# Installiere die Dependencies
-RUN npm install -g nodemon
+# Installiere Projekt-Dependencies
+RUN npm install
 
 # Kopiere den Rest des Codes
 COPY . .

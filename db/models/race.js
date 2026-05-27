@@ -9,7 +9,8 @@ export default (sequelize, DataTypes) => {
 
       rounds: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: null,
       },
 
       // Aller wieviel Runden wird gewertet

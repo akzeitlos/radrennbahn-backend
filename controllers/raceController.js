@@ -1,6 +1,6 @@
 import db from "../db/index.js";
 
-const { race, raceMode, raceClass, athlete, danishScoringRound, raceAthlete, raceEntry } = db;
+const { race, raceMode, raceClass, athlete, club, danishScoringRound, raceAthlete, raceEntry } = db;
 
 // ==============================
 // GET ALL
@@ -11,7 +11,7 @@ async function getAllRaces(req, res) {
       include: [
         { model: raceMode, as: "raceMode" },
         { model: raceClass, as: "raceClasses" },
-        { model: athlete, as: "athletes" },
+        { model: athlete, as: "athletes", include: [{ model: raceClass, as: "raceClasses" }, { model: club, as: "club" }] },
         { model: danishScoringRound, as: "danishScoringRounds" },
       ],
     });
@@ -31,7 +31,7 @@ async function getRaceById(req, res) {
       include: [
         { model: raceMode, as: "raceMode" },
         { model: raceClass, as: "raceClasses" },
-        { model: athlete, as: "athletes" },
+        { model: athlete, as: "athletes", include: [{ model: raceClass, as: "raceClasses" }, { model: club, as: "club" }] },
         { model: danishScoringRound, as: "danishScoringRounds" },
         { model: raceEntry, as: "raceEntries", order: [["sortOrder", "ASC"]] },
       ],
@@ -78,9 +78,9 @@ async function createRace(req, res) {
     const newRace = await race.create({
       date,
       raceModeId,
-      rounds,
-      scoringInterval,
-      lapdownMode,
+      rounds: rounds ?? null,
+      scoringInterval: scoringInterval ?? 1,
+      lapdownMode: lapdownMode ?? "lapped",
       lapdownPointsWin: lapdownMode === "points" ? lapdownPointsWin : null,
       lapdownPointsLoss: lapdownMode === "points" ? lapdownPointsLoss : null,
       pointsFirst: pointsFirst ?? null,
@@ -109,7 +109,7 @@ async function createRace(req, res) {
       include: [
         { model: raceMode, as: "raceMode" },
         { model: raceClass, as: "raceClasses" },
-        { model: athlete, as: "athletes" },
+        { model: athlete, as: "athletes", include: [{ model: raceClass, as: "raceClasses" }, { model: club, as: "club" }] },
         { model: danishScoringRound, as: "danishScoringRounds" },
       ],
     });
@@ -200,7 +200,7 @@ async function updateRace(req, res) {
       include: [
         { model: raceMode, as: "raceMode" },
         { model: raceClass, as: "raceClasses" },
-        { model: athlete, as: "athletes" },
+        { model: athlete, as: "athletes", include: [{ model: raceClass, as: "raceClasses" }, { model: club, as: "club" }] },
         { model: danishScoringRound, as: "danishScoringRounds" },
       ],
     });
@@ -307,7 +307,7 @@ async function getRaceSession(req, res) {
       include: [
         { model: raceMode, as: "raceMode" },
         { model: raceClass, as: "raceClasses" },
-        { model: athlete, as: "athletes" },
+        { model: athlete, as: "athletes", include: [{ model: raceClass, as: "raceClasses" }, { model: club, as: "club" }] },
         { model: danishScoringRound, as: "danishScoringRounds" },
         { model: raceEntry, as: "raceEntries" },
       ],

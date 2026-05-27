@@ -94,6 +94,18 @@ const checkLapdownPoints = [
     .withMessage("lapdownPointsLoss muss eine Zahl sein."),
 ];
 
+const isEliminationMode = async (raceModeId) => {
+  if (!raceModeId) return false;
+  const mode = await raceMode.findByPk(raceModeId);
+  return mode?.slug === "elimination";
+};
+
+const roundsNotRequired = async (raceModeId) => {
+  if (!raceModeId) return false;
+  const mode = await raceMode.findByPk(raceModeId);
+  return mode?.slug === "elimination" || mode?.slug === "scratch";
+};
+
 // ==============================
 // CREATE
 // ==============================
@@ -107,24 +119,27 @@ export const validateCreateRace = [
 
   checkRaceModeExists,
 
-  body("rounds")
-    .notEmpty()
-    .withMessage("Rundenanzahl ist erforderlich.")
-    .bail()
-    .isInt({ min: 1 })
-    .withMessage("Rundenanzahl muss eine positive Zahl sein."),
+  body("rounds").custom(async (value, { req }) => {
+    if (await roundsNotRequired(req.body.raceModeId)) return true;
+    if (value === undefined || value === null || value === "")
+      throw new Error("Rundenanzahl ist erforderlich.");
+    if (!Number.isInteger(Number(value)) || Number(value) < 1)
+      throw new Error("Rundenanzahl muss eine positive Zahl sein.");
+    return true;
+  }),
 
   body("scoringInterval")
-    .optional()
+    .optional({ nullable: true })
     .isInt({ min: 1 })
     .withMessage("Wertungsintervall muss eine positive Zahl sein."),
 
-  body("lapdownMode")
-    .notEmpty()
-    .withMessage("Überrundungsmodus ist erforderlich.")
-    .bail()
-    .isIn(["points", "lapped"])
-    .withMessage("Überrundungsmodus muss 'points' oder 'lapped' sein."),
+  body("lapdownMode").custom(async (value, { req }) => {
+    if (await isEliminationMode(req.body.raceModeId)) return true;
+    if (!value) throw new Error("Überrundungsmodus ist erforderlich.");
+    if (!["points", "lapped"].includes(value))
+      throw new Error("Überrundungsmodus muss 'points' oder 'lapped' sein.");
+    return true;
+  }),
 
   ...checkLapdownPoints,
 
@@ -157,12 +172,12 @@ export const validateUpdateRace = [
     }),
 
   body("rounds")
-    .optional()
+    .optional({ nullable: true })
     .isInt({ min: 1 })
     .withMessage("Rundenanzahl muss eine positive Zahl sein."),
 
   body("scoringInterval")
-    .optional()
+    .optional({ nullable: true })
     .isInt({ min: 1 })
     .withMessage("Wertungsintervall muss eine positive Zahl sein."),
 
