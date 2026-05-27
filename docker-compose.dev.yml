@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: nodemon server.js
+    command: npx nodemon server.js
     dns:
       - 8.8.8.8
       - 8.8.4.4
