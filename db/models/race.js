@@ -7,6 +7,13 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      // Optionale Startzeit im Format "HH:MM" (24h)
+      time: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
+
       rounds: {
         type: DataTypes.INTEGER,
         allowNull: true,

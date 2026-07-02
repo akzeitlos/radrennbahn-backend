@@ -80,18 +80,18 @@ const checkLapdownPoints = [
   body("lapdownPointsWin")
     .if(body("lapdownMode").equals("points"))
     .notEmpty()
-    .withMessage("lapdownPointsWin ist erforderlich wenn lapdownMode 'points' ist.")
+    .withMessage("Bitte die Punkte für die Überrundung (Gewinn) eintragen.")
     .bail()
     .isInt()
-    .withMessage("lapdownPointsWin muss eine Zahl sein."),
+    .withMessage("Überrundung Gewinn muss eine ganze Zahl sein."),
 
   body("lapdownPointsLoss")
     .if(body("lapdownMode").equals("points"))
     .notEmpty()
-    .withMessage("lapdownPointsLoss ist erforderlich wenn lapdownMode 'points' ist.")
+    .withMessage("Bitte die Punkte für die Überrundung (Verlust) eintragen.")
     .bail()
     .isInt()
-    .withMessage("lapdownPointsLoss muss eine Zahl sein."),
+    .withMessage("Überrundung Verlust muss eine ganze Zahl sein."),
 ];
 
 const isEliminationMode = async (raceModeId) => {
@@ -116,6 +116,11 @@ export const validateCreateRace = [
     .bail()
     .isDate()
     .withMessage("Datum muss ein gültiges Datum sein."),
+
+  body("time")
+    .optional({ nullable: true, checkFalsy: true })
+    .matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .withMessage("Uhrzeit muss im Format HH:MM sein."),
 
   checkRaceModeExists,
 
@@ -163,6 +168,11 @@ export const validateUpdateRace = [
     .optional()
     .isDate()
     .withMessage("Datum muss ein gültiges Datum sein."),
+
+  body("time")
+    .optional({ nullable: true, checkFalsy: true })
+    .matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .withMessage("Uhrzeit muss im Format HH:MM sein."),
 
   body("raceModeId")
     .optional()

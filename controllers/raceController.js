@@ -60,6 +60,7 @@ async function createRace(req, res) {
   try {
     const {
       date,
+      time,
       raceModeId,
       rounds,
       scoringInterval,
@@ -77,6 +78,7 @@ async function createRace(req, res) {
 
     const newRace = await race.create({
       date,
+      time: time || null,
       raceModeId,
       rounds: rounds ?? null,
       scoringInterval: scoringInterval ?? 1,
@@ -134,6 +136,7 @@ async function updateRace(req, res) {
 
     const {
       date,
+      time,
       raceModeId,
       rounds,
       scoringInterval,
@@ -150,6 +153,7 @@ async function updateRace(req, res) {
     } = req.body;
 
     if (date !== undefined) found.date = date;
+    if (time !== undefined) found.time = time || null;
     if (raceModeId !== undefined) found.raceModeId = raceModeId;
     if (rounds !== undefined) found.rounds = rounds;
     if (scoringInterval !== undefined) found.scoringInterval = scoringInterval;
